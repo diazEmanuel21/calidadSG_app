@@ -1,10 +1,10 @@
 <?php
 
-// Autoload de clases usando Composer o una implementación manual
+// Autoload para cargar las clases automáticamente
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
     $base_dir = __DIR__ . '/../app/';
-    
+
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
         return;
@@ -18,12 +18,7 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// Controlador de usuarios
-use App\Controllers\UserController;
-
-// Instanciar el controlador y ejecutar el método index
-$controller = new UserController();
-$controller->index();
-
+// Incluimos el archivo de rutas
+require_once __DIR__ . '/../routes/web.php';
 
 ?>
