@@ -136,7 +136,7 @@ class AuthController
         }
 
         $user = $this->userModel->getUserById($_SESSION['user_id']);
-        require_once __DIR__ . '/../Views/dashboard.php';
+        // require_once __DIR__ . '/../Views/dashboard.php';
     }
 
     // Cerrar sesión

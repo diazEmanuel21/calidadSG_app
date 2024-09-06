@@ -17,10 +17,21 @@ class WeatherController
     // Método para manejar la solicitud de consulta de clima
     public function consultWeather()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $city = $_POST['city']; // Obtenemos la ciudad desde el formulario
-            $userId = $_SESSION['user_id']; // Suponiendo que el ID del usuario está en la sesión
+        // Asegurarse de que la sesión esté iniciada
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['city'])) {
+            $city = trim($_POST['city']); // Obtenemos la ciudad desde el formulario
+            $userId = $_SESSION['user_id'] ?? null; // Suponiendo que el ID del usuario está en la sesión
             $apiKey = 'd78a13512aa0cdd885cb571253434d35'; // Tu API key
+
+            if (!$userId) {
+                // Manejo de usuario no autenticado
+                echo "Usuario no autenticado.";
+                return;
+            }
 
             try {
                 // Llamamos a la API para obtener los datos del clima
@@ -35,13 +46,17 @@ class WeatherController
 
                     // Redirigimos al dashboard o mostramos algún mensaje
                     header('Location: /calidadSG_app/public/dashboard');
-                    exit();
+                    exit(); // Asegúrate de que no se ejecute más código después de la redirección
                 } else {
                     throw new Exception('Datos incompletos recibidos desde la API del clima.');
                 }
             } catch (Exception $e) {
+                // Puedes redirigir a una página de error o mostrar un mensaje de error en la vista
                 echo "Error al obtener los datos del clima: " . $e->getMessage();
             }
+        } else {
+            // Manejo de solicitud GET o datos faltantes
+            echo "Solicitud inválida o datos de ciudad faltantes.";
         }
     }
 
@@ -65,14 +80,12 @@ class WeatherController
         return $weatherData;
     }
 
-    // Método para mostrar el historial de clima en el dashboard
     public function showWeatherHistory($userId)
     {
         // Obtenemos el historial de clima desde el modelo
         $history = $this->weatherModel->getWeatherHistory($userId);
 
-        // Pasamos los datos del historial a la vista
-        require __DIR__ . '/../../Views/dashboard.php';
+        require __DIR__ . '../../Views/dashboard.php';
     }
 }
 

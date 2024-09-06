@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard & Historial de Clima</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="/calidadSG_app/public/css/styles.css">
     <style>
         body {
@@ -15,18 +16,17 @@
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            padding-top: 6em;
         }
 
         .header {
             display: flex;
             flex-direction: row;
-            justify-content: center;
-            align-items: center;
+            justify-content: space-between;
             background-color: #333;
             color: #fff;
+            position: fixed;
+            width: 100%;
         }
 
         .header h1 {
@@ -36,10 +36,15 @@
         }
 
         .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             background-color: #fff;
             padding: 20px;
             border-radius: 0 0 8px 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2em;
         }
 
         .content p {
@@ -49,20 +54,28 @@
 
         .logout-button {
             display: inline-block;
-            padding: 10px 10px;
+            padding: 10px 20px;
+            font-size: 16px;
             color: #fff;
-            background-color: #e74c3c;
+            background-color: #007bff;
             border: none;
             border-radius: 5px;
+            text-align: center;
             text-decoration: none;
-            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         .logout-button:hover {
-            background-color: #c0392b;
+            background-color: #0056b3;
+            transform: scale(1.05);
         }
+
+        .logout-button:active {
+            background-color: #003d7a;
+            transform: scale(0.95);
+        }
+
 
         h2 {
             text-align: center;
@@ -109,54 +122,61 @@
 </head>
 
 <body>
+    <div class="header">
+        <h1>Bienvenido!</h1>
+        <button href="/calidadSG_app/public/logout" class="logout-button">Cerrar sesión</button>
+    </div>
+
     <div class="container">
-        <!-- Dashboard -->
-        <div class="header">
-            <h1>Bienvenido, <?php echo htmlspecialchars($user['name']); ?>!</h1>
-            <a href="/calidadSG_app/public/logout" class="logout-button">Cerrar sesión</a>
-        </div>
+        <section>
+            <!-- Formulario para consultar clima -->
+            <div class="content">
+                <h2>Consultar Clima</h2>
+                <form method="POST" action="/calidadSG_app/public/consult-weather">
+                    <label for="city">Ingrese la ciudad:</label>
+                    <input type="text" id="city" name="city" placeholder="Ej: Bogotá" required>
+                    <button type="submit" class="logout-button">Consultar</button>
+                </form>
+            </div>
 
-        <!-- Formulario para consultar clima -->
-        <div class="content">
-            <h2>Consultar Clima</h2>
-            <form method="POST" action="/calidadSG_app/public/consult-weather">
-                <label for="city">Ingrese la ciudad:</label>
-                <input type="text" id="city" name="city" placeholder="Ej: Bogotá" required>
-                <button type="submit" class="logout-button">Consultar</button>
-            </form>
-        </div>
-
-        <!-- Historial de Clima -->
-        <h2>Historial de Clima</h2>
-        <div class="filter-container">
-            <input type="text" id="search" placeholder="Filtrar por ciudad..." onkeyup="filterTable()">
-        </div>
-        <table id="weather-history">
-            <thead>
-                <tr>
-                    <th>Ciudad</th>
-                    <th>Temperatura (°C)</th>
-                    <th>Descripción del Clima</th>
-                    <th>Fecha y Hora de Consulta</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($history) && is_array($history)) : ?>
-                    <?php foreach ($history as $entry) : ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($entry['city']); ?></td>
-                            <td><?php echo htmlspecialchars($entry['temperature']); ?>°C</td>
-                            <td><?php echo htmlspecialchars($entry['description']); ?></td>
-                            <td><?php echo htmlspecialchars($entry['created_at']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
+            <!-- Historial de Clima -->
+            <h2>Historial de Clima</h2>
+            <div class="filter-container">
+                <input type="text" id="search" placeholder="Filtrar por ciudad..." onkeyup="filterTable()">
+            </div>
+            <table id="weather-history">
+                <thead>
                     <tr>
-                        <td colspan="4">No hay historial de clima disponible.</td>
+                        <th>Ciudad</th>
+                        <th>Temperatura (°C)</th>
+                        <th>Descripción del Clima</th>
+                        <th>Fecha y Hora de Consulta</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if (!empty($history) && is_array($history)) : ?>
+                        <?php foreach ($history as $entry) : ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($entry['city']); ?></td>
+                                <td><?php echo htmlspecialchars($entry['temperature']); ?>°C</td>
+                                <td><?php echo htmlspecialchars($entry['description']); ?></td>
+                                <td><?php echo htmlspecialchars($entry['created_at']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="4">No hay historial de clima disponible.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <!-- weather view -->
+            <?php include __DIR__ . '../../Views/weatherView.php'; ?>
+
+        </section>
     </div>
 
     <script>
@@ -164,6 +184,9 @@
         function filterTable() {
             const searchInput = document.getElementById('search').value.toLowerCase();
             const tableRows = document.querySelectorAll('#weather-history tbody tr');
+
+            console.log(searchInput); // Muestra el valor en la consola (opcional)
+
 
             tableRows.forEach(row => {
                 const city = row.querySelector('td:first-child').textContent.toLowerCase();

@@ -38,18 +38,23 @@ switch ($uri) {
 
     case 'calidadSG_app/public/dashboard':
         $authController->dashboard();
+        $userId = $_SESSION['user_id'] ?? null; // Obtener el ID del usuario desde la sesión
+        if ($userId) {
+            $weatherController->showWeatherHistory($userId);
+        } else {
+            echo "Error: Usuario no autenticado.";
+        }
         break;
 
     case 'calidadSG_app/public/logout':
         $authController->logout();
         break;
 
-    // Nueva ruta para la consulta de clima
     case 'calidadSG_app/public/consult-weather':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $weatherController->consultWeather(); // Llamada al método del WeatherController
         } else {
-            echo "Método no permitido"; // Podrías manejar esto con una redirección o un mensaje de error.
+            echo "Método no permitido"; // Manejo simple para métodos no permitidos
         }
         break;
 

@@ -33,7 +33,7 @@ class Weather
     public function getWeatherHistory($userId)
     {
         // Realiza una consulta a la base de datos para obtener el historial del usuario
-        $stmt = $this->db->prepare("SELECT * FROM weather_history WHERE user_id = :user_id ORDER BY created_at DESC");
+        $stmt = $this->db->prepare("SELECT * FROM weather_data WHERE user_id = :user_id ORDER BY created_at DESC");
         $stmt->bindParam(':user_id', $userId);
         $stmt->execute();
 
