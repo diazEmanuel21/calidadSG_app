@@ -44,14 +44,13 @@ class AuthController
 
             if ($user) {
                 $_SESSION['user_id'] = $user['id'];
-                // $_SESSION['success'] = 'Bienvenido de nuevo, ' . htmlspecialchars($user['name']) . '!';
+                $_SESSION['success'] = 'Bienvenido de nuevo, ' . htmlspecialchars($user['name']) . '!';
                 header('Location: /calidadSG_app/public/dashboard');
             } else {
                 $_SESSION['error'] = 'Credenciales incorrectas.';
                 header('Location: /calidadSG_app/public/login');
             }
         } catch (\Exception $e) {
-            // Manejar errores generales
             $_SESSION['error'] = 'Hubo un problema al procesar tu solicitud. Por favor, intenta nuevamente.';
             error_log($e->getMessage()); // Registrar el error en el log para depuración
             header('Location: /calidadSG_app/public/login');
@@ -67,7 +66,6 @@ class AuthController
     }
 
     // Manejar registro
-
     public function register()
     {
         // Verificar si la solicitud es POST
@@ -101,7 +99,6 @@ class AuthController
         }
 
         if (!empty($errors)) {
-            // Mostrar errores de validación
             $_SESSION['errors'] = $errors;
             header('Location: /calidadSG_app/public/register');
             exit();
@@ -115,17 +112,15 @@ class AuthController
         }
 
         // Registrar el nuevo usuario
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        if ($this->userModel->register($name, $email, $hashedPassword)) {
+        if ($this->userModel->register($name, $email, $password)) {
             $_SESSION['success'] = 'Registro exitoso. Por favor, inicia sesión.';
             header('Location: /calidadSG_app/public/login');
-            exit();
         } else {
             $_SESSION['errors'] = ['Error al registrar el usuario. Por favor, inténtelo de nuevo.'];
             header('Location: /calidadSG_app/public/register');
-            exit();
         }
+
+        exit();
     }
 
     // Mostrar el dashboard (solo si está autenticado)
@@ -135,8 +130,8 @@ class AuthController
             header('Location: /calidadSG_app/public/login');
         }
 
-        $user = $this->userModel->getUserById($_SESSION['user_id']);
-        // require_once __DIR__ . '/../Views/dashboard.php';
+/*         $user = $this->userModel->getUserById($_SESSION['user_id']);
+        require_once __DIR__ . '/../Views/dashboard.php'; */
     }
 
     // Cerrar sesión
@@ -160,7 +155,7 @@ class AuthController
         // Redirigir a la página de inicio de sesión con un mensaje de éxito
         $_SESSION['success'] = 'Has cerrado sesión correctamente.';
         header('Location: /calidadSG_app/public/login');
-        exit(); // Asegúrate de que no se ejecute más código
+        exit();
     }
-
 }
+?>

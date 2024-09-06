@@ -28,7 +28,7 @@ class User
     // Registrar un nuevo usuario
     public function register($name, $email, $password)
     {
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $this->db->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
         return $stmt->execute([
             ':name' => $name,
@@ -37,23 +37,19 @@ class User
         ]);
     }
 
-   // Verificar las credenciales del usuario
-   public function authenticate($email, $password)
-   {
-       $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
-       /* 
-        El uso de bindParam asegura que el valor del email sea tratado como un parámetro 
-        en lugar de parte de la consulta SQL
-       */
-       $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-       $stmt->execute();
-       $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Verificar las credenciales del usuario
+    public function authenticate($email, $password)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-       if ($user && password_verify($password, $user['password'])) {
-           return $user;
-       }
-       return false;
-   }
+        if ($user && password_verify($password, $user['password'])) {
+            return $user;
+        }
+        return false;
+    }
 
     // Obtener un usuario por ID
     public function getUserById($id)
@@ -71,5 +67,4 @@ class User
         return $stmt->fetchColumn() > 0;
     }
 }
-
 ?>
