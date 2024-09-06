@@ -4,94 +4,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/calidadSG_app/public/css/custom.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Clima por Geolocalización</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid #ddd;
-        }
-
-        th,
-        td {
-            padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #007BFF;
-            color: white;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-
-        .button:active {
-            background-color: #003d7a;
-            transform: scale(0.95);
-        }
-    </style>
 </head>
 
 <body>
-    <h1>Consulta del Clima por Geolocalización</h1>
-    <!-- El botón ha sido eliminado ya que ya no es necesario -->
-    <table id="weather-table">
-        <thead>
-            <tr>
-                <th>Ciudad</th>
-                <th>Temperatura (°C)</th>
-                <th>Descripción del Clima</th>
-                <th>Fecha y Hora de Consulta</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Las filas se llenarán dinámicamente con JavaScript -->
-        </tbody>
-    </table>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h2 class="display-4 mb-4">Consulta del Clima por Geolocalización</h2>
+                <p class="lead">Obtén información meteorológica actual según tu ubicación.</p>
+            </div>
+        </div>
+
+        <!-- Tabla de clima -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-10">
+                <div class="table-responsive">
+                    <table id="weather-table" class="table table-bordered table-hover table-striped">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Ciudad</th>
+                                <th>Temperatura (°C)</th>
+                                <th>Descripción del Clima</th>
+                                <th>Fecha y Hora de Consulta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Las filas se llenarán dinámicamente con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         async function getWeather() {
-            // Verificar si el navegador soporta la geolocalización
             if (navigator.geolocation) {
-                // Obtener la posición actual del usuario
                 navigator.geolocation.getCurrentPosition(async (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
 
-                    // API Key de OpenWeather (reemplázala con tu propia clave)
                     const apiKey = 'd78a13512aa0cdd885cb571253434d35';
 
                     try {
-                        // Obtener el clima basado en la ubicación
                         const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
                         const weatherData = await weatherResponse.json();
 
@@ -101,7 +59,6 @@
                             const description = weatherData.weather[0].description;
                             const date = new Date().toLocaleString();
 
-                            // Añadir la información a la tabla
                             const tableBody = document.querySelector('#weather-table tbody');
                             const row = document.createElement('tr');
                             row.innerHTML = `
@@ -125,9 +82,11 @@
             }
         }
 
-        // Llamar a la función cuando se carga la página
         document.addEventListener('DOMContentLoaded', getWeather);
     </script>
+    <script src="https://kit.fontawesome.com/6d80509662.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXlRIKNXjl59+m6YZqLyZr+SO5B7zBcf1LU4bkR8nEGzZ3Dqq5qDIFGj59I1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGq6hJbLKP6mty5CYq6ir2COw8rK4y/2QpUJ0VCh1xPENZ5STof0sAi1qN" crossorigin="anonymous"></script>
 </body>
 
 </html>
